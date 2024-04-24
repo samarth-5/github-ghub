@@ -218,26 +218,35 @@ void calculateAllDistances(vector<Vertex>& graph, int source, vector<int>& dista
 
 
 //function to modify graph data
-void modifyGraphData(vector<Vertex>& graph, vector<vector<int>>& edge_data) 
+void modifyGraphData(vector<Vertex>& graph, vector<vector<int>>& edge_data, int& num_vertices) 
 {
     cout << "--------------------------------------------------------------\n"; 
     cout << "                     MODIFY GRAPH DATA" << endl;
     cout << "--------------------------------------------------------------\n"; 
-    cout << "Enter the number of edges to modify: ";
-    int num_modified_edges;
-    cin >> num_modified_edges;
+    cout << "Enter the number of vertices to modify: ";
+    int num_modified_vertices;
+    cin >> num_modified_vertices;
 
-    cout << "Enter the new edge data in the format (source destination weight):" << endl;
-    for (int i = 0; i < num_modified_edges; ++i) 
+    cout << "Enter the new vertex data (number of edges for each vertex):" << endl;
+    for (int i = 0; i < num_modified_vertices; ++i) 
     {
-        int source, destination, weight;
-        cout << "Modified Edge " << i + 1 << ": ";
-        cin >> source >> destination >> weight;
+        int num_edges;
+        cout << "Number of edges for Vertex " << num_vertices + i << ": ";
+        cin >> num_edges;
 
-        // Update graph data
-        edge_data.push_back({source, destination, weight});
-        constructGraph(graph, edge_data);
+        for (int j = 0; j < num_edges; ++j) 
+        {
+            int destination, weight;
+            cout << "Edge " << j + 1 << " for Vertex " << num_vertices + i << " (destination weight): ";
+            cin >> destination >> weight;
+
+            // Update edge data
+            edge_data.push_back({num_vertices + i, destination, weight});
+            constructGraph(graph, edge_data);
+        }
     }
+
+    num_vertices += num_modified_vertices;
 
     cout << "Graph data modified successfully!" << endl;
     cout << "--------------------------------------------------------------\n"; 
@@ -334,8 +343,8 @@ int main()
                 }
                 break;
 
-            case '5':
-                modifyGraphData(graph, edge_data);
+             case '5':
+                modifyGraphData(graph, edge_data, num_vertices);
                 break;
 
             case '6':
