@@ -168,8 +168,8 @@ void displayMenu()
     cout << "5. Modify Graph Data" << endl;
     cout << "6. Display Graph" << endl;
     cout << "7. Exit" << endl;
-    cout << "Enter your choice: ";
     cout << "\n--------------------------------------------------------------\n"; 
+    cout << "Enter your choice: ";
 
 }
 
@@ -217,40 +217,72 @@ void calculateAllDistances(vector<Vertex>& graph, int source, vector<int>& dista
 }
 
 
-//function to modify graph data
-void modifyGraphData(vector<Vertex>& graph, vector<vector<int>>& edge_data, int& num_vertices) 
+void newInputData(vector<Vertex>& graph, int num_vertices, int num_edges, vector<vector<int>>& edge_data) 
+{    
+    edge_data.resize(num_edges, vector<int>(3));
+    cout << "--------------------------------------------------------------\n"; 
+
+    cout << "Enter edge data in the format (source destination weight):" << endl;
+    for (int i = 0; i < num_edges; ++i) 
+    {
+        cout << "Edge " << i + 1 << ": ";
+        cin >> edge_data[i][0] >> edge_data[i][1] >> edge_data[i][2];
+    }
+    cout << "--------------------------------------------------------------\n"; 
+
+    // Construct the graph
+    constructGraph(graph, edge_data);
+
+    // Initialize distance array to store shortest distances from source to each vertex
+    vector<int> distance(num_vertices, INT_MAX);
+    vector<int> parent(num_vertices, -1);
+}
+
+// Function to modify graph data
+void modifyGraphData(vector<Vertex>& graph, vector<vector<int>>& edge_data, int& num_vertices, int& num_edges) 
 {
     cout << "--------------------------------------------------------------\n"; 
     cout << "                     MODIFY GRAPH DATA" << endl;
     cout << "--------------------------------------------------------------\n"; 
-    cout << "Enter the number of vertices to modify: ";
-    int num_modified_vertices;
-    cin >> num_modified_vertices;
 
-    cout << "Enter the new vertex data (number of edges for each vertex):" << endl;
-    for (int i = 0; i < num_modified_vertices; ++i) 
-    {
-        int num_edges;
-        cout << "Number of edges for Vertex " << num_vertices + i << ": ";
-        cin >> num_edges;
+    cout << "--------------------------------------------------------------\n\n"; 
 
-        for (int j = 0; j < num_edges; ++j) 
-        {
-            int destination, weight;
-            cout << "Edge " << j + 1 << " for Vertex " << num_vertices + i << " (destination weight): ";
-            cin >> destination >> weight;
+    // Input data from the user
+    cout << "Enter the number of vertices: ";
+    cin >> num_vertices;
+    cout << "Enter the number of edges: ";
+    cin >> num_edges;
 
-            // Update edge data
-            edge_data.push_back({num_vertices + i, destination, weight});
-            constructGraph(graph, edge_data);
-        }
+    // Resize and clear the graph vector
+    graph.resize(num_vertices);
+    
+    // Clear the existing edge data
+    for (auto& vertex : graph) {
+        vertex.edges.clear();
     }
 
-    num_vertices += num_modified_vertices;
+    // Resize edge_data to hold new edge data
+    edge_data.resize(num_edges, vector<int>(3));
 
+    // Input new edge data
+    cout << "Enter edge data in the format (source destination weight):" << endl;
+    for (int i = 0; i < num_edges; ++i) 
+    {
+        cout << "Edge " << i + 1 << ": ";
+        cin >> edge_data[i][0] >> edge_data[i][1] >> edge_data[i][2];
+    }
+    cout << "--------------------------------------------------------------\n"; 
+
+    // Construct the graph with the new data
+    constructGraph(graph, edge_data);
+
+    cout << "--------------------------------------------------------------\n"; 
     cout << "Graph data modified successfully!" << endl;
     cout << "--------------------------------------------------------------\n"; 
 }
+
+
+
 
 
 int main() 
@@ -289,6 +321,7 @@ int main()
     {
         displayMenu();
         cin >> choice;
+        cout << "\n--------------------------------------------------------------\n"; 
 
         switch (choice) 
         {
@@ -344,8 +377,9 @@ int main()
                 break;
 
              case '5':
-                modifyGraphData(graph, edge_data, num_vertices);
+                modifyGraphData(graph, edge_data, num_vertices, num_edges);
                 break;
+
 
             case '6':
                 displayGraph(graph);
